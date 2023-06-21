@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+<div class="col-12">
+    <h2>Posts by {{request.user}}</h2>
+    {% if not posts %}
+        <h5>No Posts yet</h5>
+    {% else %}
+            {% for x in posts %}
+                {% for post, img in x.items %}
+                    <div class="card" style="border: 1px solid rgb(0, 0, 0);background-color: #2d3741; border-radius: 10px;">
+                        <div class="container post">
+                            <h1>{{profile}}</h1>
+                            {% if img.profileImage %}
+                                <img class="rounded-circle mr-2" style="width: 20px; height: 20px;" src="{{img.profileImage.url}}">
+                            {% else %}
+                                <img class="rounded-circle mr-2" style="width: 20px; height: 20px;" src="/userimage.webp">    
+                            {% endif %}   
+                            <a class="mr-2 white-important" href="{% url 'detailuser' post.user.pk %}">@{{ post.user }}</a> 
+                            <hr>
+                            {% if post.parent %}
+                            <div class="container post" style="border: 1px solid;border: 1px solid rgb(0, 0, 0);background-color: #2d3741; border-radius: 10px;); border-radius: 10px;">
+                                {% if img.profileImage %}
+                                    <img class="rounded-circle mr-2" style="width: 20px; height: 20px;" src="{{img.profileImage.url}}">
+                                {% else %}
+                                    <img class="rounded-circle mr-2" style="width: 20px; height: 20px;" src="">    
+                                {% endif %}   
+                                <a class="mr-2 white-important" href="{% url 'detailuser' post.parent.user.pk %}">Retweet : @{{ post.parent.user }}</a>
+                                <a style="color: white;color: (internal value);text-decoration: unset;" href="{{post.post_url}}"><p>{{post.parent.captions | linebreaks | truncatewords:45}}</p></a>
+                                <small style="color: rgb(225, 232, 237);">🤍 {{post.parent.total_likes}} Likes</small>
+                                <small style="color: rgb(225, 232, 237);">| 💬 {{post.parent.total_comments}} comments</small>
+                                <small style="color: rgb(225, 232, 237);">| 🕐 {{post.parent.dateTime}} comments</small>
+                            </div>
+                            <br>
+                            {% else %}
+                                <a  style="color: rgb(199, 194, 194);color: (internal value);text-decoration: unset;" href="{{post.post_url}}"><p>{{post.captions | linebreaks | truncatewords:45}}</p></a>
+                            {% endif %}
+                            <small style="color: rgb(225, 232, 237);">🤍 {{post.total_likes}} Likes</small>
+                            <small style="color: rgb(225, 232, 237);">| 💬 {{post.total_comments}} comments</small>
+                            <small style="color: rgb(225, 232, 237);">| 🕐 {{post.dateTime}}</small>
+                        </div>
+                    </div>
+                    <br>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+        {% if posts.has_previous %}
+            <a href="{% url 'personalposts' %}?page={{posts.previous_page_number}}" class="btn btn-outline-secondary btn-sm" style="">Previous Page</a>
+        {% endif %}
+        {% if posts.has_next %}
+            <a href="{% url 'personalposts' %}?page={{posts.next_page_number}}" class="btn btn-outline-secondary btn-sm" style="">Next Page</a>
+        {% endif %}
+        <br>
+        <br>
+</div>
+
+{% endblock %}
